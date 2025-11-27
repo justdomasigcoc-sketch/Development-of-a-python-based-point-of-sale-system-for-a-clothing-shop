@@ -1,0 +1,118 @@
+product_names = []
+product_prices = []
+product_stocks = []
+
+while True:
+    print("\n=== SIMPLE POS MENU ===")
+    print("1. Add Products")
+    print("2. Start Transaction")
+    print("3. Exit")
+
+    choice = input("\nEnter choice: ")
+
+    # OPTION 1: ADD PRODUCTS
+    if choice == "1":
+        print("\n=== ADD PRODUCTS TO INVENTORY ===")
+
+        while True:
+            name = input("\nEnter product name (type 'done' to stop): ")
+
+            if name.lower() == "done":
+                break
+
+            price = float(input("Enter product price (₱): "))
+            stock = int(input("Enter product quantity: "))
+
+            product_names.append(name)
+            product_prices.append(price)
+            product_stocks.append(stock)
+
+        print("\n=== Product List ===")
+        if len(product_names) == 0:
+            print("No products added.")
+        else:
+            for i in range(len(product_names)):
+                print("\n-------------------------------------")
+                print(f"Product Name: {product_names[i]}")
+                print(f"Product Price: ₱{product_prices[i]:.2f}")
+                print(f"Product Quantity: {product_stocks[i]}")
+
+        print("\n=== PRODUCT REGISTRATION COMPLETE! ===")
+
+    # OPTION 2: START TRANSACTION
+    elif choice == "2":
+        if len(product_names) == 0:
+            print("\nNo products available! Add products first.")
+            continue
+
+        print("\n=== AVAILABLE PRODUCTS ===")
+        for i in range(len(product_names)):
+            print(f"{i + 1}. {product_names[i]} - ₱{product_prices[i]:.2f} | Stock: {product_stocks[i]}")
+
+        clothing_names = []
+        clothing_prices = []
+        clothing_quantities = []
+
+        print("\n=== TRANSACTION START ===")
+
+        while True:
+            product_num = int(input("\nEnter product number to purchase (0 to finish): "))
+
+            if product_num == 0:
+                break
+
+            if product_num < 1 or product_num > len(product_names):
+                print("Invalid product number! Try again.")
+                continue
+
+            index = product_num - 1
+
+            # Check if stock is zero
+            if product_stocks[index] == 0:
+                print("❌ This product is out of stock! Choose another.")
+                continue
+
+            quantity = int(input("Enter quantity: "))
+
+            # Check insufficient stock
+            if quantity > product_stocks[index]:
+                print(f"❌ Only {product_stocks[index]} stocks available!")
+                continue
+
+            # Add to transaction lists
+            clothing_names.append(product_names[index])
+            clothing_prices.append(product_prices[index])
+            clothing_quantities.append(quantity)
+
+            # Deduct stock immediately
+            product_stocks[index] -= quantity
+            print(f"✔ Added to cart! Remaining stock: {product_stocks[index]}")
+
+        # --- Total Calculation ---
+        total = 0
+        print("\n--- PURCHASE SUMMARY ---")
+        for i in range(len(clothing_names)):
+            subtotal = clothing_prices[i] * clothing_quantities[i]
+            total += subtotal
+            print(f"{clothing_names[i]} x {clothing_quantities[i]} = ₱{subtotal:.2f}")
+
+        print(f"\nTotal Amount: ₱{total:.2f}")
+
+        # --- Payment ---
+        payment = float(input("Enter payment amount: ₱"))
+
+        if payment < total:
+            print("Insufficient payment. Please add more funds.")
+        else:
+            change = payment - total
+            print(f"Change: ₱{change:.2f}")
+
+        print("\nThank you for shopping with us!")
+
+    # OPTION 3: EXIT PROGRAM
+    elif choice == "3":
+        print("\nExiting POS... Goodbye!")
+        break
+
+    else:
+        print("Invalid choice! Please try again.")
